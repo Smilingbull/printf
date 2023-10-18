@@ -1,40 +1,40 @@
 #include "main.h"
 
 /**
- * _prinstr - Function to print a string with a newline
- * @str: The string to print
+ * _puts - prints a string with a newline
+ * @str: the string to print
  *
- * Return: The number of characters printed
+ * Return: the number of characters printed
  */
 int _puts(char *str)
 {
-    char *start = str;
+	char *start = str;
 
-    while (*str)
-        _putchar(*str++);
-    return (str - start);
+	while (*str)
+		_putchar(*str++);
+	return (str - start);
 }
 
 /**
- * _putchar - Function to write a character to stdout
+ * _putchar - writes the character c to stdout
  * @c: The character to print
  *
- * Return: On success, it returns 1.
- * On error, it returns -1 and sets errno appropriately.
+ * Return: On success, 1.
+ * On error, -1 is returned, and errno is set appropriately.
  */
 int _putchar(int c)
 {
-    static int counter;
-    static char buffer[OUTPUT_BUF_SIZE];
+	static int counter;
+	static char buffer[OUTPUT_BUF_SIZE];
 
-    if (c == BUF_FLUSH || counter >= OUTPUT_BUF_SIZE)
-    {
-        write(1, buffer, counter);
-        counter = 0;
-    }
+	if (c == BUF_FLUSH || counter >= OUTPUT_BUF_SIZE)
+	{
+		write(1, buffer, counter);
+		counter = 0;
+	}
 
-    if (c != BUF_FLUSH)
-        buffer[counter++] = c;
-    return (1);
+	if (c != BUF_FLUSH)
+		buffer[counter++] = c;
+	return (1);
 }
 
