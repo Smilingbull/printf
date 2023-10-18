@@ -1,87 +1,113 @@
 #ifndef _PRINTF_H
 #define _PRINTF_H
 
-/**
- *  Include necessary header files.
- */
-
 #include <stdarg.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <limits.h>
 #include <stdlib.h>
 
-/**
- *  Define constants.
- */
-
 #define OUTPUT_BUF_SIZE 1024
 #define BUF_FLUSH -1
+
 #define FIELD_BUF_SIZE 50
+
 #define NULL_STRING "(null)"
 
-/** 
- * Define a macro to initialize a `ParamsStruct` struct.
- */
+#define PARAMS_INIT                  \
+	{                                \
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0 \
+	}
 
-#define PARAMS_INITIAL_STATE {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-/**
- *  Define flags that can be used to modify the format of output.
- */
-
-#define CONVERT_LOWER_CASE 1
-#define CONVERT_AS_UNSIGNED 2
+#define CONVERT_LOWERCASE 1
+#define CONVERT_UNSIGNED 2
 
 /**
- *  Define a `ParamsStruct` struct to store format parameters.
+ * struct parameters - parameters struct
+ *
+ * @unsign: flag if unsigned value
+ *
+ * @plus_flag: on if plus_flag specified
+ * @space_flag: on if hashtag_flag specified
+ * @hashtag_flag: on if _flag specified
+ * @zero_flag: on if _flag specified
+ * @minus_flag: on if _flag specified
+ *
+ * @width: field width specified
+ * @precision: field precision specified
+ *
+ * @h_modifier: on if h_modifier is specified
+ * @l_modifier: on if l_modifier is specified
+ *
  */
 
-typedef struct Parameters
+typedef struct parameters
 {
-  unsigned int isUnsigned : 1;
-  unsigned int hasPlusFlag : 1;
-  unsigned int hasSpaceFlag : 1;
-  unsigned int hasHashTagFlag : 1;
-  unsigned int hasZeroFlag : 1;
-  unsigned int hasMinusFlag : 1;
-  unsigned int width;
-  unsigned int precision;
-  unsigned int hasHModifier : 1;
-  unsigned int hasLModifier : 1;
-} ParamsStruct;
+	unsigned int unsign : 1;
+
+	unsigned int plus_flag : 1;
+	unsigned int space_flag : 1;
+	unsigned int hashtag_flag : 1;
+	unsigned int zero_flag : 1;
+	unsigned int minus_flag : 1;
+
+	unsigned int width;
+	unsigned int precision;
+
+	unsigned int h_modifier : 1;
+	unsigned int l_modifier : 1;
+} params_t;
 
 /**
- * Define a `SpecifierStruct` struct to store a format specifier and its associated function.
+ * struct specifier - Struct token
+ *
+ * @specifier: format token
+ * @f: The function associated
  */
-typedef struct Specifier
+typedef struct specifier
 {
-  char *formatSpecifier;
-  int (*functionPointer)(va_list, ParamsStruct *);
-} SpecifierStruct;
+	char *specifier;
+	int (*f)(va_list, params_t *);
+} specifier_t;
 
-/**
- * Declare functions.
- */
-int printString(char *str);
-int printChar(int character);
-int printInteger(va_list arguments, ParamsStruct *parameters);
-int printUnsigned(va_list arguments, ParamsStruct *parameters);
-int printAddress(va_list arguments, ParamsStruct *parameters);
-int printFromTo(char *start, char *stop, char *exception);
-int printReverse(va_list arguments, ParamsStruct *parameters);
-int printRot13(va_list arguments, ParamsStruct *parameters);
-int printHex(va_list arguments, ParamsStruct *parameters);
-int printBinary(va_list arguments, ParamsStruct *parameters);
-int printOctal(va_list arguments, ParamsStruct *parameters);
-int getPrintFunction(char *string, va_list arguments, ParamsStruct *parameters);
-int getFlag(char *string, ParamsStruct *parameters);
-int getModifier(char *string, ParamsStruct *parameters);
-char *getWidth(char *string, ParamsStruct *parameters, va_list arguments);
-char *getPrecision(char *pointer, ParamsStruct *parameters, va_list arguments);
-int isDigit(int character);
-int stringLength(char *string);
-void initializeParams(ParamsStruct *parameters, va_list arguments);
-int printfFormatted(const char *format, ...);
+int _puts(char *str);
+int _putchar(int c);
+
+int print_char(va_list ap, params_t *params);
+int print_int(va_list ap, params_t *params);
+int print_string(va_list ap, params_t *params);
+int print_percent(va_list ap, params_t *params);
+int print_S(va_list ap, params_t *params);
+
+char *convert(long int num, int base, int flags, params_t *params);
+int print_unsigned(va_list ap, params_t *params);
+int print_address(va_list ap, params_t *params);
+
+int (*get_specifier(char *s))(va_list ap, params_t *params);
+int get_print_func(char *s, va_list ap, params_t *params);
+int get_flag(char *s, params_t *params);
+int get_modifier(char *s, params_t *params);
+char *get_width(char *s, params_t *params, va_list ap);
+
+int print_hex(va_list ap, params_t *params);
+int print_HEX(va_list ap, params_t *params);
+int print_binary(va_list ap, params_t *params);
+int print_octal(va_list ap, params_t *params);
+
+int print_from_to(char *start, char *stop, char *except);
+int print_rev(va_list ap, params_t *params);
+int print_rot13(va_list ap, params_t *params);
+
+int _isdigit(int c);
+int _strlen(char *s);
+int print_number(char *str, params_t *params);
+int print_number_right_shift(char *str, params_t *params);
+int print_number_left_shift(char *str, params_t *params);
+
+void init_params(params_t *params, va_list ap);
+
+char *get_precision(char *p, params_t *params, va_list ap);
+
+int _printf(const char *format, ...);
 
 #endif
